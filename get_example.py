@@ -1,48 +1,53 @@
 #!/usr/bin/python
-
-import urllib2
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common.exceptions import StaleElementReferenceException
 import time
 
-options = webdriver.ChromeOptions()
-options.add_argument('--ignore-certificate-errors')
-options.add_argument('--incognito')
-options.add_argument('--headless')
-driver = webdriver.Chrome('chromedriver')
+chromeOptions = webdriver.ChromeOptions()
+chromeOptions.add_argument("--start-maximized")
+chromeOptions.add_argument('--ignore-certificate-errors')
+chromeOptions.add_argument('--incognito')
+chromeOptions.add_argument('--headless')
 
-baseUrl = 'https://learn.freecodecamp.org/'
-driver.get(baseUrl)
-expandLists = driver.find_elements_by_class_name("superblock")
-for x in range(len(expandLists)):
-    if expandLists[x].is_displayed():
-        driver.execute_script("arguments[0].click();", expandLists[x])
-        time.sleep(1)
+driver = webdriver.Chrome(chrome_options=chromeOptions)
+driver.get('https://learn.freeCodeCamp.org')
+
+superblocks = driver.find_elements_by_class_name('superblock')
+
+for superblock in superblocks:
+    superblock.click()
+    time.sleep(2)
+
 page_source = driver.page_source
 
-# url = urllib2.urlopen(page)
 soup = BeautifulSoup(page_source, 'html.parser')
-
 curriculum = soup.find(class_='map-ui')
+
+with open("output.html", "w+") as file:
+    file.write(str(curriculum.contents[0]))
+
+# search_box.send_keys('ChromeDriver')
+# search_box.submit()
 
 # Get course module headers (ie Responsive Web Design Certification)
 # modules = soup.find_all(class_='map-title')
-super_blocks = soup.find_all(class_='superblock')
-courses = curriculum.find_all(class_='superblock')
-with open("output/markup.html", "a+") as myfile:
-    for course in courses:
+# super_blocks = soup.find_all(class_='superblock')
+# courses = curriculum.find_all(class_='superblock')
+# with open("output/markup.html", "a+") as myfile:
+#     for course in courses:
 
-        modules = course.find_all(class_='block')
-        for module in modules:
-            if 'open' not in module['class']:
-                module['class'].append(u'open')
-            # print(module.attrs)
+#         modules = course.find_all(class_='block')
+#         for module in modules:
+#             if 'open' not in module['class']:
+#                 module['class'].append(u'open')
+#             # print(module.attrs)
 
-        myfile.write(str(course))
+#         myfile.write(str(course))
 
-        # challenges = module.find_all(class_='map-challenge-title')
-        # for challenge in challenges:
-        # print(challenge.a.string)
+# challenges = module.find_all(class_='map-challenge-title')
+# for challenge in challenges:
+# print(challenge.a.string)
 
 # urlList = []
 
