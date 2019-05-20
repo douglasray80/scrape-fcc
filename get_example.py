@@ -8,14 +8,15 @@ chromeOptions = webdriver.ChromeOptions()
 chromeOptions.add_argument('--ignore-certificate-errors')
 chromeOptions.add_argument('--incognito')
 chromeOptions.add_argument('--headless')
-# chromeOptions.add_argument("--start-maximized")
 
 driver = webdriver.Chrome(chrome_options=chromeOptions)
 driver.get('https://learn.freeCodeCamp.org')
+print 'get learn.freeCodeCamp.org'
 time.sleep(5)
 
 superblocks = driver.find_elements_by_class_name('superblock')
 
+print 'clicking superblocks'
 for superblock in superblocks:
     superblock.click()
     time.sleep(2)
@@ -23,6 +24,7 @@ for superblock in superblocks:
 time.sleep(2)
 blocks = driver.find_elements_by_class_name('block')
 
+print 'clicking blocks'
 for block in blocks:
     block.click()
     time.sleep(2)
@@ -33,12 +35,18 @@ soup = BeautifulSoup(page_source, 'html5lib')
 curriculum = soup.find(class_='map-ui')
 courses = curriculum.find_all(class_='superblock')
 
+print 'parsing html'
 with open("output/index.html", "a+") as file:
+    print 'writing to file...'
     for course in courses:
         list_items = course.ul.find_all('li')
 
         for item in list_items:
-            file.write(str(item))
+            if item.div:
+                # module title, parsed
+                module_title = item.div.h5.string
+                module_title = module_title.lower().replace(' ', '-')
+                file.write(module_title + '\n')
 
 # urlList = []
 
