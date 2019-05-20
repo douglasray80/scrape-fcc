@@ -5,13 +5,14 @@ from selenium.common.exceptions import StaleElementReferenceException
 import time
 
 chromeOptions = webdriver.ChromeOptions()
-chromeOptions.add_argument("--start-maximized")
 chromeOptions.add_argument('--ignore-certificate-errors')
 chromeOptions.add_argument('--incognito')
 chromeOptions.add_argument('--headless')
+# chromeOptions.add_argument("--start-maximized")
 
 driver = webdriver.Chrome(chrome_options=chromeOptions)
 driver.get('https://learn.freeCodeCamp.org')
+time.sleep(5)
 
 superblocks = driver.find_elements_by_class_name('superblock')
 
@@ -19,35 +20,25 @@ for superblock in superblocks:
     superblock.click()
     time.sleep(2)
 
+time.sleep(2)
+blocks = driver.find_elements_by_class_name('block')
+
+for block in blocks:
+    block.click()
+    time.sleep(2)
+
 page_source = driver.page_source
 
-soup = BeautifulSoup(page_source, 'html.parser')
+soup = BeautifulSoup(page_source, 'html5lib')
 curriculum = soup.find(class_='map-ui')
+courses = curriculum.find_all(class_='superblock')
 
-with open("output.html", "w+") as file:
-    file.write(str(curriculum.contents[0]))
+with open("output/index.html", "a+") as file:
+    for course in courses:
+        list_items = course.ul.find_all('li')
 
-# search_box.send_keys('ChromeDriver')
-# search_box.submit()
-
-# Get course module headers (ie Responsive Web Design Certification)
-# modules = soup.find_all(class_='map-title')
-# super_blocks = soup.find_all(class_='superblock')
-# courses = curriculum.find_all(class_='superblock')
-# with open("output/markup.html", "a+") as myfile:
-#     for course in courses:
-
-#         modules = course.find_all(class_='block')
-#         for module in modules:
-#             if 'open' not in module['class']:
-#                 module['class'].append(u'open')
-#             # print(module.attrs)
-
-#         myfile.write(str(course))
-
-# challenges = module.find_all(class_='map-challenge-title')
-# for challenge in challenges:
-# print(challenge.a.string)
+        for item in list_items:
+            file.write(str(item))
 
 # urlList = []
 
