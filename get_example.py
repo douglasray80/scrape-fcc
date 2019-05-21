@@ -36,17 +36,22 @@ curriculum = soup.find(class_='map-ui')
 courses = curriculum.find_all(class_='superblock')
 
 print 'parsing html'
-with open("output/index.html", "a+") as file:
+with open("output/index.html", "w+") as file:
     print 'writing to file...'
     for course in courses:
         list_items = course.ul.find_all('li')
 
         for item in list_items:
-            if item.div:
-                # module title, parsed
-                module_title = item.div.h5.string
-                module_title = module_title.lower().replace(' ', '-')
-                file.write(module_title + '\n')
+            # if item.div:
+            #     # module title, parsed
+            #     module_title = item.div.h5.string
+            #     module_title = module_title.lower().replace(' ', '-')
+            #     file.write(module_title + '\n')
+            if item.a:
+                challenge_title = item.a.string
+                challenge_title = challenge_title.lower().replace(' ', '-')
+                print(challenge_title)
+                # file.write(challenge_title + '\n')
 
 # urlList = []
 
