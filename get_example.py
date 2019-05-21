@@ -48,10 +48,11 @@ with open("output/index.html", "w+") as file:
             #     module_title = module_title.lower().replace(' ', '-')
             #     file.write(module_title + '\n')
             if item.a:
-                challenge_title = item.a.string
-                challenge_title = challenge_title.lower().replace(' ', '-')
-                print(challenge_title)
-                # file.write(challenge_title + '\n')
+                challenge_title = item.a.string.encode('utf-8')
+                # challenge_title = challenge_title.lower().replace(' ', '-')
+
+                print challenge_title
+                file.write(str(challenge_title) + '\n')
 
 # urlList = []
 
